@@ -1,14 +1,18 @@
-// src/services/api/schema.service.ts
 import axios from "axios";
+import type { IncomingSection } from "../../types/schema";
 
-export type ApiSchema = unknown;
+function isFormArray(x: unknown): x is IncomingSection[] {
+  return (
+    Array.isArray(x) && x.every((sec) => Array.isArray((sec as any)?.fields))
+  );
+}
 
 const SCHEMA_URL = import.meta.env.VITE_SCHEMA_URL as string | undefined;
 
-export async function getSchema(): Promise<ApiSchema> {
+export async function getSchema(): Promise<IncomingSection[]> {
   if (!SCHEMA_URL) {
     throw new Error(
-      "Missing VITE_SCHEMA_URL. Create .env with VITE_SCHEMA_URL=... and restart dev server."
+      "Missing VITE_SCHEMA_URL. Create .env.local with VITE_SCHEMA_URL=... and restart dev server."
     );
   }
 
@@ -16,12 +20,15 @@ export async function getSchema(): Promise<ApiSchema> {
     const res = await axios.get(SCHEMA_URL, {
       headers: { Accept: "application/json" },
     });
+    const data = res?.data;
 
-    if (!res || typeof res.data === "undefined" || res.data === null) {
-      throw new Error("Empty schema response.");
+    if (!isFormArray(data)) {
+      throw new Error(
+        "Unexpected schema format: expected an array of sections with fields[]"
+      );
     }
 
-    return res.data as ApiSchema;
+    return data;
   } catch (err: any) {
     const message =
       err?.response?.data?.message ?? err?.message ?? "Failed to fetch schema.";

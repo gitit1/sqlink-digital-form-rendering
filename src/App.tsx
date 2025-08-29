@@ -1,7 +1,11 @@
 import { Container, Box, Typography } from "@mui/material";
 import LoadingSchema from "./components/LoadingSchema";
+import DynamicForm from "./components/DynamicForm/DynamicForm";
+import { useSchema } from "./hooks/useSchema";
 
 export default function App() {
+  const { schema, loading } = useSchema();
+
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
       <Box sx={{ mb: 3 }}>
@@ -13,7 +17,10 @@ export default function App() {
           rules.
         </Typography>
 
-        <LoadingSchema />
+        <>
+          {loading && <LoadingSchema />}
+          {schema && <DynamicForm schema={schema} />}
+        </>
       </Box>
     </Container>
   );
