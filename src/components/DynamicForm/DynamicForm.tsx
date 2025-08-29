@@ -1,12 +1,15 @@
+// src/components/DynamicForm/index.tsx
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography, Tooltip } from "@mui/material";
 import type { FormProps, FormValues } from "../../types/form";
 
 import { buildDefaultValues } from "../../utils/DynamicForm/helpers";
 import { useDerivedSections } from "../../hooks/DynamicForm/useDerivedSections";
 import SectionsRenderer from "./components/SectionsRenderer";
+import SubmissionDialog from "./components/SubmissionDialog"; // NEW
 
-export default function FormFromSections({ schema }: FormProps) {
+export default function DynamicForm({ schema }: FormProps) {
   const sections = useDerivedSections(schema);
   const defaultValues = buildDefaultValues(sections);
 
@@ -16,33 +19,47 @@ export default function FormFromSections({ schema }: FormProps) {
     criteriaMode: "all",
   });
 
+  const [open, setOpen] = useState(false);
+  const [submitted, setSubmitted] = useState<FormValues | null>(null);
+
   const onSubmit = (data: FormValues) => {
-    // eslint-disable-next-line no-alert
-    alert("Submitted:\n" + JSON.stringify(data, null, 2));
+    setSubmitted(data);
+    setOpen(true);
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
-      <SectionsRenderer sections={sections} control={control} />
+    <>
+      <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
+        <SectionsRenderer sections={sections} control={control} />
 
-      <Button
-        variant="contained"
-        type="submit"
-        disabled={!formState.isValid}
-        sx={{ mt: 2 }}
-      >
-        Submit
-      </Button>
-
-      {!formState.isValid && (
-        <Typography
-          variant="caption"
-          color="text.secondary"
-          sx={{ display: "block", mt: 1 }}
+        <Tooltip
+          title="Fill all fields according to the rules to enable submit."
+          placement="top"
+          arrow
+          disableHoverListener={formState.isValid}
+          disableFocusListener={formState.isValid}
+          disableTouchListener={formState.isValid}
+          enterTouchDelay={0}
         >
-          Fill all fields according to the rules to enable submit.
-        </Typography>
-      )}
-    </Box>
+          <span style={{ display: "inline-block" }}>
+            <Button
+              variant="contained"
+              type="submit"
+              disabled={!formState.isValid}
+              sx={{ mt: 2 }}
+            >
+              Submit
+            </Button>
+          </span>
+        </Tooltip>
+      </Box>
+
+      <SubmissionDialog
+        open={open}
+        data={submitted}
+        title="Submitted Data"
+        onClose={() => setOpen(false)}
+      />
+    </>
   );
 }
