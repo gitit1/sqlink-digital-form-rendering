@@ -86,6 +86,6 @@ Environment:
 - [✅] **Step 3:** RHF + wiring; minimal dynamic field renderer.
 - [✅] **Step 4:** Submission dialog and disabled-until-valid behavior.
 - [✅] **Step 5:** Polish (responsive grid, consistent helper/error text, edge cases).
-- [ ] **Step 6:** README updates & cleanup.
+- [✅] **Step 6:** README updates & cleanup.
 
 ---
