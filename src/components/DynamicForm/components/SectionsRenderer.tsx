@@ -14,7 +14,7 @@ export default function SectionsRenderer({ sections, control }: Props) {
     <>
       {sections.map((sec, idx) => (
         <Box key={idx} sx={{ mb: 2 }}>
-          <Typography variant="h6" sx={{ mt: idx ? 2 : 0, mb: 1 }}>
+          <Typography variant="h5" align="center" sx={{ mb: 2 }}>
             {sec.title}
           </Typography>
           {sec.fields.map((f) => (

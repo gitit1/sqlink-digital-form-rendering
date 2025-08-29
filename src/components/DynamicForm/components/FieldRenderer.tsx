@@ -17,7 +17,6 @@ export default function FieldRenderer({ field: f, control, rules }: Props) {
   const isSelect = f.type === "select";
   const isNumber = f.type === "input_number";
   const isTextarea = f.type === "textarea";
-  // spec-aligned: keep "input" as plain text (no extra email type)
 
   return (
     <Controller

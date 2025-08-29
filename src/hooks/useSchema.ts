@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
-import { getSchema, type ApiSchema } from "../services/api/schema.service";
+import { getSchema } from "../services/api/schema.service";
+import type { IncomingSection } from "../types/schema";
 
 export function useSchema() {
-  const [schema, setSchema] = useState<ApiSchema | null>(null);
+  const [schema, setSchema] = useState<IncomingSection[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -14,6 +15,7 @@ export function useSchema() {
       setSchema(data);
     } catch (e: any) {
       setError(e?.message ?? "Failed to fetch schema");
+      setSchema(null);
     } finally {
       setLoading(false);
     }

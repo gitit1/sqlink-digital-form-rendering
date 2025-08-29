@@ -12,7 +12,6 @@ export function buildRules(
   }
 
   if (f.type === "input" || f.type === "textarea") {
-    // strictly follow schema: min/max as string lengths, and regex
     if (typeof f.rules?.min?.value === "number") {
       rules.minLength = {
         value: f.rules.min.value,
@@ -36,7 +35,6 @@ export function buildRules(
       };
     }
   } else if (f.type === "input_number") {
-    // numbers: min/max numeric; regex if provided
     rules.setValueAs = (v: unknown) =>
       v === "" || v === null || typeof v === "undefined"
         ? undefined

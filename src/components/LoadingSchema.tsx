@@ -1,21 +1,42 @@
-import { Alert, Button, Paper, Typography } from "@mui/material";
-import { useSchema } from "../hooks/useSchema";
+import {
+  Alert,
+  Button,
+  Paper,
+  Typography,
+  Box,
+  CircularProgress,
+} from "@mui/material";
+import type { IncomingSection } from "../types/schema";
 
-export default function LoadingSchema() {
-  const { schema, loading, error, refetch } = useSchema();
+type LoadingSchemaProps = {
+  loading: boolean;
+  error: string | null;
+  schema: IncomingSection[] | null;
+  refetch: () => void;
+};
+
+export default function LoadingSchema({
+  loading,
+  error,
+  schema,
+  refetch,
+}: LoadingSchemaProps) {
   const hasSchema = schema != null;
 
-  return (
-    <Paper variant="outlined" sx={{ p: 2 }}>
-      {loading && (
-        <Typography variant="body1" color="text.secondary">
-          Loading schema…
-        </Typography>
-      )}
+  if (loading) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
+        <CircularProgress size={40} />
+      </Box>
+    );
+  }
 
-      {!loading && error && (
+  if (error) {
+    return (
+      <Paper variant="outlined">
         <Alert
           severity="error"
+          sx={{ textAlign: "center" }}
           action={
             <Button color="inherit" size="small" onClick={refetch}>
               Retry
@@ -24,11 +45,19 @@ export default function LoadingSchema() {
         >
           {error}
         </Alert>
-      )}
+      </Paper>
+    );
+  }
 
-      {!loading && !error && hasSchema && (
-        <Typography variant="h6">Schema loaded</Typography>
-      )}
-    </Paper>
-  );
+  if (hasSchema) {
+    return (
+      <Paper variant="outlined">
+        <Typography variant="h6" align="center">
+          Schema loaded
+        </Typography>
+      </Paper>
+    );
+  }
+
+  return null;
 }
